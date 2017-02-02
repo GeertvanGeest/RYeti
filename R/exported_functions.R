@@ -46,8 +46,8 @@ read_specdat <- function(file){
 
   meta <- data.frame(Correction = meta$Correction, Date = meta$Date,
                      Time = meta$Time, Integration_time = as.numeric(meta[,"T_int..ms."]),
-                     Ee = as.numeric(meta[,"Ee..W.sqm...380.780nm."]), PAR_begin = meta[,"Begin [nm]"],
-                     PAR_end = meta[,"End [nm]"], PAR = meta[,"Ephot (Begin..End) [umol/s sqm]"],
+                     Ee = as.numeric(meta[,"Ee..W.sqm...380.780nm."]),
+                     PAR = meta[,"Ephot (Begin..End) [umol/s sqm]"],
                      stringsAsFactors = FALSE)
   rownames(meta) <- paste0("measurement", 1:nrow(meta))
 
