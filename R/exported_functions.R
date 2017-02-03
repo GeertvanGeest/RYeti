@@ -74,7 +74,8 @@ read_specdat <- function(file){
                      stringsAsFactors = FALSE)
   rownames(meta) <- paste0("measurement", 1:nrow(meta))
 
-  start_specdat <- which(grepl(pattern = "Wavelength", x = ex))[3]
+  start_specdat <- which(grepl(pattern = "^Wavelength \\[nm\\]", x = ex))[1]
+  #start_specdat <- tail(start_specdat, 1)
 
   end_specdat <- emptylines[emptylines > start_specdat][1]
   specdat <- read.csv2(file = file, skip = start_specdat - 1, nrows = end_specdat - start_specdat - 1,
