@@ -28,26 +28,49 @@ calc_pss = function(f, abs){
 #' @examples
 read_specdat <- function(file){
   ex <- readLines(file)
+  emptyline <- paste(rep(";", nchar(ex[1])), collapse = "")
+  emptylines <- which(grepl(pattern = emptyline, x = ex))
   start_meta <- which(grepl(pattern = "Name", x = ex))[1]
-  end_meta <- which(grepl(pattern = "DWl [nm]", x = ex, fixed = TRUE))[1]
-  meta <- read.csv2(file = file, skip = start_meta - 1, nrows = end_meta - start_meta,
-                    row.names = 1, stringsAsFactors = FALSE)
+  end_meta <- emptylines[emptylines > start_meta][2]
+
+  #end_meta <- which(grepl(pattern = "DWl [nm]", x = ex, fixed = TRUE))[1]
+  meta <- read.csv2(file = file, skip = start_meta - 1, nrows = end_meta - start_meta-1,
+                    row.names = 1,
+                    stringsAsFactors = FALSE)
   meta <- t(as.matrix(meta))
   meta <- gsub(",", ".", meta)
   meta <- data.frame(meta, stringsAsFactors = FALSE)
 
   start_par <- which(grepl(pattern = "PAR", x = ex))[1]
-  emptylines <- which(grepl(pattern = ";;;", x = ex))
+  if(is.na(start_par)){
+    start_par <- which(grepl(pattern = "Photosynthetically Active Radiation", x = ex, fixed = TRUE))[1]
+  }
+
   end_par <- emptylines[emptylines > start_par][1]
   par <- read.csv2(file = file, skip = start_par, nrows = end_par - start_par -1,
                     row.names = 1, stringsAsFactors = FALSE, header = F)
   par <- as.data.frame(t(as.matrix(par)))
   meta <- cbind(meta, par)
 
+  colname_int_time <- "T_int..ms."
+  if(!colname_int_time %in% colnames(meta)){
+    colname_int_time <- "Integration.Time..ms."
+  }
+
+  colname_Ee <- "Ee..W.sqm...380.780nm."
+  if(!colname_Ee %in% colnames(meta)){
+    colname_Ee <- "Irradiance..W.sqm....380.780nm."
+  }
+
+  colname_PAR <- "Ephot (Begin..End) [umol/s sqm]"
+  if(!colname_PAR %in% colnames(meta)){
+    colname_PAR <- "Ephot (Begin..End) [uMol/s sqm]"
+  }
+
   meta <- data.frame(Correction = meta$Correction, Date = meta$Date,
-                     Time = meta$Time, Integration_time = as.numeric(meta[,"T_int..ms."]),
-                     Ee = as.numeric(meta[,"Ee..W.sqm...380.780nm."]),
-                     PAR = meta[,"Ephot (Begin..End) [umol/s sqm]"],
+                     Time = meta$Time, Integration_time = as.numeric(meta[,colname_int_time]),
+                     Ee = as.numeric(meta[,colname_Ee]),
+                     PAR = meta[,colname_PAR],
                      stringsAsFactors = FALSE)
   rownames(meta) <- paste0("measurement", 1:nrow(meta))
 
