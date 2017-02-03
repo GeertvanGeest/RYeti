@@ -57,10 +57,11 @@ read_specdat <- function(file){
     colname_int_time <- "Integration.Time..ms."
   }
 
-  colname_Ee <- "Ee..W.sqm...380.780nm."
-  if(!colname_Ee %in% colnames(meta)){
-    colname_Ee <- "Irradiance..W.sqm....380.780nm."
+  Ee_pos <- grepl("Ee..W.sqm", colnames(meta), fixed = TRUE)
+  if(!any(Ee_pos)){
+    Ee_pos <- grepl("Irradiance..W.sqm", colnames(meta), fixed = TRUE)
   }
+  colname_Ee <- colnames(meta)[Ee_pos]
 
   colname_PAR <- "Ephot (Begin..End) [umol/s sqm]"
   if(!colname_PAR %in% colnames(meta)){
