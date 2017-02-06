@@ -28,6 +28,9 @@ calc_pss = function(f, abs){
 #' @examples
 read_specdat <- function(file, sep = ";", dec = ","){
   ex <- readLines(file)
+  if(sep == ";" & substr(ex[1], 1,2) == ",,"){
+    stop("You probably want to choose a comma as separtor and a period as decimal sign.")
+  }
   emptyline <- paste(rep(sep, nchar(ex[1])), collapse = "")
   emptylines <- which(grepl(pattern = emptyline, x = ex))
   start_meta <- which(grepl(pattern = "Name", x = ex))[1]
