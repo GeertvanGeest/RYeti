@@ -73,12 +73,15 @@ read_specdat <- function(file, sep = ";", dec = ","){
     colname_PAR <- "Ephot (Begin..End) [uMol/s sqm]"
   }
 
+  ids <- rownames(meta)
+  ids <- gsub(pattern = "^X.", replacement = "measurement", ids)
+
   meta <- data.frame(Correction = meta$Correction, Date = meta$Date,
                      Time = meta$Time, Integration_time = as.numeric(meta[,colname_int_time]),
                      Ee = as.numeric(meta[,colname_Ee]),
                      PAR = meta[,colname_PAR],
                      stringsAsFactors = FALSE)
-  rownames(meta) <- paste0("measurement", 1:nrow(meta))
+  rownames(meta) <- ids#paste0("measurement", 1:nrow(meta))
 
   start_specdat <- which(grepl(pattern = "^Wavelength \\[nm\\]", x = ex))[1]
   #start_specdat <- tail(start_specdat, 1)
@@ -89,7 +92,7 @@ read_specdat <- function(file, sep = ";", dec = ","){
   }
   specdat <- read.csv2(file = file, skip = start_specdat - 1, nrows = end_specdat - start_specdat - 1,
                        row.names = 1, sep = sep, dec = dec)
-  colnames(specdat) <- paste0("measurement", 1:(ncol(specdat)))
+  colnames(specdat) <- ids#paste0("measurement", 1:(ncol(specdat)))
   meta$PSS <- apply(X = specdat, MARGIN = 2, function(x){
     names(x) <- rownames(specdat)
     calc_pss(x, absorbing_states)
