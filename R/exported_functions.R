@@ -26,9 +26,9 @@ calc_pss = function(f, abs){
 #' @export
 #'
 #' @examples
-read_specdat <- function(file){
+read_specdat <- function(file, sep = ";", dec = ","){
   ex <- readLines(file)
-  emptyline <- paste(rep(";", nchar(ex[1])), collapse = "")
+  emptyline <- paste(rep(sep, nchar(ex[1])), collapse = "")
   emptylines <- which(grepl(pattern = emptyline, x = ex))
   start_meta <- which(grepl(pattern = "Name", x = ex))[1]
   end_meta <- emptylines[emptylines > start_meta][2]
@@ -36,9 +36,11 @@ read_specdat <- function(file){
   #end_meta <- which(grepl(pattern = "DWl [nm]", x = ex, fixed = TRUE))[1]
   meta <- read.csv2(file = file, skip = start_meta - 1, nrows = end_meta - start_meta-1,
                     row.names = 1,
-                    stringsAsFactors = FALSE)
+                    stringsAsFactors = FALSE, sep = sep, dec = dec)
   meta <- t(as.matrix(meta))
-  meta <- gsub(",", ".", meta)
+  if(dec == ","){
+    meta <- gsub(",", ".", meta)
+  }
   meta <- data.frame(meta, stringsAsFactors = FALSE)
 
   start_par <- which(grepl(pattern = "PAR", x = ex))[1]
@@ -48,7 +50,7 @@ read_specdat <- function(file){
 
   end_par <- emptylines[emptylines > start_par][1]
   par <- read.csv2(file = file, skip = start_par, nrows = end_par - start_par -1,
-                    row.names = 1, stringsAsFactors = FALSE, header = F)
+                    row.names = 1, stringsAsFactors = FALSE, header = F, sep = sep, dec = dec)
   par <- as.data.frame(t(as.matrix(par)))
   meta <- cbind(meta, par)
 
@@ -79,8 +81,11 @@ read_specdat <- function(file){
   #start_specdat <- tail(start_specdat, 1)
 
   end_specdat <- emptylines[emptylines > start_specdat][1]
+  if(is.na(end_specdat)){
+    end_specdat <- length(ex)
+  }
   specdat <- read.csv2(file = file, skip = start_specdat - 1, nrows = end_specdat - start_specdat - 1,
-                       row.names = 1)
+                       row.names = 1, sep = sep, dec = dec)
   colnames(specdat) <- paste0("measurement", 1:(ncol(specdat)))
   meta$PSS <- apply(X = specdat, MARGIN = 2, function(x){
     names(x) <- rownames(specdat)

@@ -4,7 +4,7 @@
 \alias{read_specdat}
 \title{Read spectral data from Yeti}
 \usage{
-read_specdat(file)
+read_specdat(file, sep = ";", dec = ",")
 }
 \arguments{
 \item{file}{A file name.}
