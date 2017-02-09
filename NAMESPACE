@@ -3,4 +3,5 @@
 export(calc_pss)
 export(plot_spectra)
 export(read_specdat)
+export(runRYetiUI)
 export(wavelengthRGB)

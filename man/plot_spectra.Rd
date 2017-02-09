@@ -14,4 +14,3 @@ plot_spectra(f, xlab = "wavelength", ylab = "Ee (W/(m^2*nm))", ...)
 \description{
 Plot spectrum
 }
-

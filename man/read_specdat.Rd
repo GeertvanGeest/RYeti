@@ -15,4 +15,3 @@ A list containing metadata and spectral data.
 \description{
 Read spectral data from Yeti
 }
-

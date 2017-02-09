@@ -17,4 +17,3 @@ A PSS value
 \description{
 Calculate PSS
 }
-

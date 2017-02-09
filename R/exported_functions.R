@@ -187,3 +187,20 @@ plot_spectra <- function(f, xlab = "wavelength", ylab = "Ee (W/(m^2*nm))", ...){
        xlab = xlab, ylab = ylab, ...)
 }
 
+
+#' Run RYeti shiny app
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' runRYetiUI()
+runRYetiUI <- function() {
+  appDir <- system.file("shiny_app", "RYeti", package = "RYeti")
+  if (appDir == "") {
+    stop("Could not find example directory. Try re-installing `RYeti`.", call. = FALSE)
+  }
+  
+  shiny::runApp(appDir, display.mode = "normal")
+}
+

@@ -15,4 +15,3 @@ A hexadecimal RGB value.
 \description{
 Create false color from wavelength
 }
-
